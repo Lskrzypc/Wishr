@@ -1,2 +1,15 @@
 @import "tailwindcss";
-@import '@nuxt/ui'
+@import '@nuxt/ui';
+
+@theme static {
+  --color-wishr-primary: #6A82FB;
+}
+
+.dark {
+  --color-wishr-primary: #6A82FB;
+}
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  font-family: Inter, 'sans-serif';
+}

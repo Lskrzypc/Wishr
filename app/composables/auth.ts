@@ -42,10 +42,21 @@ export function useAuth() {
     return;
   }
 
+  const userInitials = computed(() => {
+    if (user?.value?.given_name && user?.value?.family_name) {
+      return (
+        user.value.given_name.charAt(0).toUpperCase() +
+        user.value.family_name.charAt(0).toUpperCase()
+      );
+    }
+    return '';
+  });
+
   return {
     user,
     isAuthenticated,
     isLoading,
+    userInitials,
     login,
     logout: logoutUser,
     addNewUser,

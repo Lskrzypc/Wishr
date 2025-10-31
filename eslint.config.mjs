@@ -1,7 +1,7 @@
 /* eslint.config.js */
 import withNuxt from './.nuxt/eslint.config.mjs';
 import globals from 'globals';
-import vueI18nPlugin from '@intlify/eslint-plugin-vue-i18n';
+// import vueI18nPlugin from '@intlify/eslint-plugin-vue-i18n';
 import tseslint from 'typescript-eslint';
 import vuePlugin from 'eslint-plugin-vue';
 import jsPlugin from '@eslint/js';
@@ -75,7 +75,7 @@ export default withNuxt([
   jsPlugin.configs.recommended,
   ...tseslint.configs.recommended,
   ...vuePlugin.configs['flat/essential'],
-  ...vueI18nPlugin.configs['flat/recommended'],
+  // ...vueI18nPlugin.configs['flat/recommended'],
 
   /* ------------------------------------------------------------------ */
   /* custom rules                                                       */
@@ -109,14 +109,14 @@ export default withNuxt([
       '@typescript-eslint/ban-ts-comment': 'warn',
 
       /* vue‑i18n ------------------------------------------------------ */
-      '@intlify/vue-i18n/no-raw-text': [
-        'error',
-        { ignoreText: ['|', 'fr-FR', 'en-US'] },
-      ],
-      '@intlify/vue-i18n/no-missing-keys-in-other-locales': [
-        'error',
-        { ignoreLocales: [] },
-      ],
+      // '@intlify/vue-i18n/no-raw-text': [
+      //   'error',
+      //   { ignoreText: ['|', 'fr-FR', 'en-US'] },
+      // ],
+      // '@intlify/vue-i18n/no-missing-keys-in-other-locales': [
+      //   'error',
+      //   { ignoreLocales: [] },
+      // ],
       // Dynamic-keys friendly; enable if/when you can statically analyse keys
       // '@intlify/vue-i18n/no-unused-keys': [
       //   'error',

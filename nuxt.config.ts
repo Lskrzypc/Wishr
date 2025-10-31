@@ -1,7 +1,39 @@
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineNuxtConfig({
+  app: {
+    head: {
+      title: 'Wishr - Make wishlists for every occasion',
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/svg',
+          href: '/icons/favicon-72.png',
+        },
+        {
+          rel: 'apple-touch-icon',
+          type: 'image/svg',
+          href: '/icons/favicon-192.png',
+          sizes: '192x192',
+        },
+      ],
+
+      meta: [
+        {
+          name: 'viewport',
+          content:
+            'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no',
+        },
+      ],
+    },
+  },
   compatibilityDate: '2025-07-15',
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    },
+  ],
   css: ['@/assets/css/main.css'],
   devtools: { enabled: true },
   modules: [
