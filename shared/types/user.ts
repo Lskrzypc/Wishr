@@ -4,53 +4,37 @@ export const personalInformationSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   email: z.string(),
-  optIn: z.boolean().optional(),
 });
 
-export const tokenTableSchema = z.array(
-  z.object({
-    id: z.string(),
-    count: z.number(),
-    usedTokens: z.number(),
-    expiresAt: z.string().optional(),
-  }),
-);
+export const itemSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string().optional(),
+  imageUrl: z.string().optional(),
+  price: z.number().optional(),
+  isReserved: z.boolean().optional(),
+  reservedBy: z.string().optional(),
+});
 
-export const transactionsHistorySchema = z.array(
-  z.object({
-    paymentId: z.string(),
-    invoiceId: z.string(),
-    paymentStatus: z.string(),
-    amountTotal: z.number(),
-    currency: z.string(),
-    createdAt: z.string(),
-  }),
-);
+export type ItemInterface = z.infer<typeof itemSchema>;
 
-export const subscriptionHistorySchema = z.array(
-  z.object({
-    subscriptionId: z.string(),
-    status: z.string(),
-    invoiceId: z.string(),
-    startedAt: z.string(),
-    paymentDate: z.string(),
-  }),
-);
+export const wishlistSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  items: z.array(itemSchema).optional(),
+  publicUrl: z.string(),
+});
+
+export type WishlistInterface = z.infer<typeof wishlistSchema>;
 
 export const userSchema = z.object({
   id: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  authProvider: z.string(),
-  authProviderId: z.string(),
-  paymentProvider: z.string().optional(),
-  paymentProviderId: z.string().optional(),
   personalInformation: personalInformationSchema,
-  tokenTable: tokenTableSchema,
-  transactionsHistory: transactionsHistorySchema.optional(),
-  subscriptionHistory: subscriptionHistorySchema.optional(),
+  wishlists: z.array(wishlistSchema).optional(),
 });
 
-export type TokenTableInterface = z.infer<typeof tokenTableSchema>;
-export type TransactionHistory = z.infer<typeof transactionsHistorySchema>;
 export type UserInterface = z.infer<typeof userSchema>;

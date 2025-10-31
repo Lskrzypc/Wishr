@@ -25,15 +25,9 @@ export const useUserStore = defineStore('user', {
       this.user = { id: docRef.id, ...user };
     },
 
-    async updateUserByProviderId(
-      authProviderId: string,
-      updates: Partial<UserInterface>,
-    ) {
+    async updateUserByUserId(userId: string, updates: Partial<UserInterface>) {
       const db = useFirestore();
-      const q = query(
-        collection(db, 'users'),
-        where('authProviderId', '==', authProviderId),
-      );
+      const q = query(collection(db, 'users'), where('id', '==', userId));
       const querySnapshot = await getDocs(q);
       const userDoc = querySnapshot.docs[0];
       if (!userDoc) return;
@@ -41,12 +35,9 @@ export const useUserStore = defineStore('user', {
       await updateDoc(userDocRef, updates);
     },
 
-    async deleteUserByProviderId(authProviderId: string) {
+    async deleteUserByUserId(userId: string) {
       const db = useFirestore();
-      const q = query(
-        collection(db, 'users'),
-        where('authProviderId', '==', authProviderId),
-      );
+      const q = query(collection(db, 'users'), where('id', '==', userId));
       const querySnapshot = await getDocs(q);
       const userDoc = querySnapshot.docs[0];
       if (!userDoc) return;
@@ -54,23 +45,17 @@ export const useUserStore = defineStore('user', {
       await deleteDoc(userDocRef);
     },
 
-    async userExists(authProviderId: string): Promise<boolean> {
+    async userExists(userId: string): Promise<boolean> {
       const db = useFirestore();
-      const q = query(
-        collection(db, 'users'),
-        where('authProviderId', '==', authProviderId),
-      );
+      const q = query(collection(db, 'users'), where('id', '==', userId));
       const querySnapshot = await getDocs(q);
       return !querySnapshot.empty;
     },
 
-    fetchUser(providerId: string) {
+    fetchUser(userId: string) {
       const db = useFirestore();
 
-      const q = query(
-        collection(db, 'users'),
-        where('authProviderId', '==', providerId),
-      );
+      const q = query(collection(db, 'users'), where('id', '==', userId));
 
       onSnapshot(q, (querySnapshot: QuerySnapshot<DocumentData>) => {
         const userDoc = querySnapshot.docs[0];
