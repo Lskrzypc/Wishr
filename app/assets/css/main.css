@@ -5,11 +5,10 @@
   --color-wishr-primary: #6A82FB;
 }
 
-.dark {
-  --color-wishr-primary: #6A82FB;
-}
-@custom-variant dark (&:is(.dark *));
-
 :root {
-  font-family: Inter, 'sans-serif';
+  font-family: Outfit, 'sans-serif';
+}
+
+body {
+  background-color: #F7F6F1;
 }

@@ -37,6 +37,7 @@ export function useAuth() {
           email: user.value?.email || '',
         },
         wishlists: [],
+        friends: [],
       });
     }
     return;

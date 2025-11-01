@@ -36,12 +36,16 @@ export default defineNuxtConfig({
   ],
   css: ['@/assets/css/main.css'],
   devtools: { enabled: true },
+  fonts: {
+    families: [{ name: 'Outfit', provider: 'Google' }],
+  },
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
     '@nuxt/ui',
     '@pinia/nuxt',
     'nuxt-vuefire',
+    '@nuxt/fonts',
   ],
   runtimeConfig: {
     public: {

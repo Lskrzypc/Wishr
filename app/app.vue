@@ -16,7 +16,6 @@ onMounted(async () => {
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
-      <UIAddWishlistButton v-if="isAuthenticated" />
     </UApp>
   </div>
 </template>

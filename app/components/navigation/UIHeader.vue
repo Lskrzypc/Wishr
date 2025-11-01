@@ -24,7 +24,7 @@ async function onAccountClicked() {
           class="size-5 ml-0.5"
           @click="login()"
         />
-        <NuxtImg
+        <img
           v-if="isAuthenticated && user?.picture"
           class="rounded-full w-7 h-7 object-cover"
           :src="user?.picture"

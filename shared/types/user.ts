@@ -30,12 +30,22 @@ export const wishlistSchema = z.object({
 
 export type WishlistInterface = z.infer<typeof wishlistSchema>;
 
+export const friendSchema = z.object({
+  id: z.string(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.string(),
+});
+
+export type FriendInterface = z.infer<typeof friendSchema>;
+
 export const userSchema = z.object({
   id: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
   personalInformation: personalInformationSchema,
   wishlists: z.array(wishlistSchema).optional(),
+  friends: z.array(friendSchema).optional(),
 });
 
 export type UserInterface = z.infer<typeof userSchema>;
