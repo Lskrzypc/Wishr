@@ -25,6 +25,19 @@ export function useUser() {
     return await userStore.userExists(userId);
   }
 
+  function computeWishesCount(user: UserInterface): number {
+    if (!user || !user.wishlists || user.wishlists.length === 0) return 0;
+
+    return user.wishlists.reduce((count, wishlist) => {
+      return count + (wishlist.items ? wishlist.items.length : 0);
+    }, 0);
+  }
+
+  function computeFriendsCount(user: UserInterface): number {
+    if (!user || !user.friends) return 0;
+    return user.friends.length;
+  }
+
   return {
     currentUser,
     updateUser,
@@ -32,5 +45,7 @@ export function useUser() {
     userExists,
     addUser,
     fetchUser,
+    computeWishesCount,
+    computeFriendsCount,
   };
 }

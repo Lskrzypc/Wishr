@@ -1,11 +1,21 @@
 <!-- eslint-disable vue/multi-word-component-names -->
-<script setup lang="ts">
-const { currentUser } = useUser();
-
-console.log('Current User:', currentUser.value);
-</script>
+<script setup lang="ts"></script>
 <template>
-  <main class="flex flex-col min-h-screen px-6 md:px-16 lg:px-32">
+  <main class="flex flex-col min-h-screen px-6 md:px-16 lg:px-80">
     <AppUserInformations />
+    <div class="flex flex-row justify-between space-x-5 mt-8">
+      <AppReservedWishesCard
+        title="Vœux réservés"
+        :count="4"
+        icon-name="i-lucide-gift"
+      />
+      <AppWishesCard title="Mes vœux" :count="27" icon-name="i-lucide-star" />
+    </div>
+    <div class="flex flex-col mt-8 gap-y-8">
+      <AppUpcomingEvents />
+      <AppWishlistViewer />
+    </div>
+    <div class="flex-1" />
+    <UIFooter />
   </main>
 </template>

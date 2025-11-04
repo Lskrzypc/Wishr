@@ -37,7 +37,7 @@ export default defineNuxtConfig({
   css: ['@/assets/css/main.css'],
   devtools: { enabled: true },
   fonts: {
-    families: [{ name: 'Outfit', provider: 'Google' }],
+    families: [{ name: 'Outfit', provider: 'google' }],
   },
   modules: [
     '@nuxt/eslint',

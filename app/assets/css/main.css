@@ -3,6 +3,8 @@
 
 @theme static {
   --color-wishr-primary: #6A82FB;
+  --color-wishr-orange: #e98247;
+  --color-wishr-gray: #847b6d;
 }
 
 :root {
