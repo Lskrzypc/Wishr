@@ -8,7 +8,7 @@ const { user } = useAuth();
     <UAvatar
       :src="user?.picture || ''"
       :alt="`${currentUser?.personalInformation.firstName || ''} ${currentUser?.personalInformation.lastName || ''}`"
-      class="mr-4 h-14 w-14"
+      class="h-14 w-14"
     />
     <div class="flex flex-col text-black">
       <span class="font-bold text-lg"

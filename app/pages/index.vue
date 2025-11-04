@@ -11,10 +11,9 @@
       />
       <AppWishesCard title="Mes vœux" :count="27" icon-name="i-lucide-star" />
     </div>
-    <div class="flex flex-col mt-8 gap-y-8">
-      <AppUpcomingEvents />
-      <AppWishlistViewer />
-    </div>
+
+    <AppWishlistViewer class="mt-8" />
+
     <div class="flex-1" />
     <UIFooter />
   </main>

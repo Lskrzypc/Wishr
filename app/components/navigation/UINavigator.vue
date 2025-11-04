@@ -27,5 +27,12 @@ function activeClass(path: string) {
         :class="['size-6', activeClass('/notifications')]"
       />
     </NuxtLink>
+
+    <NuxtLink to="/account" class="flex items-center">
+      <UIcon
+        name="i-lucide-user"
+        :class="['size-6', activeClass('/account')]"
+      />
+    </NuxtLink>
   </div>
 </template>
