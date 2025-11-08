@@ -25,7 +25,6 @@ export const wishlistSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
   items: z.array(itemSchema).optional(),
-  publicUrl: z.string(),
 });
 
 export type WishlistInterface = z.infer<typeof wishlistSchema>;
