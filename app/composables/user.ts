@@ -1,4 +1,4 @@
-import type { UserInterface } from '~~/shared/types/user';
+import type { UserInterface, WishlistInterface } from '~~/shared/types/user';
 
 export function useUser() {
   const userStore = useUserStore();
@@ -33,6 +33,10 @@ export function useUser() {
     }, 0);
   }
 
+  const userWishlists = computed<WishlistInterface[]>(() => {
+    return currentUser.value?.wishlists || [];
+  });
+
   function computeFriendsCount(user: UserInterface): number {
     if (!user || !user.friends) return 0;
     return user.friends.length;
@@ -47,5 +51,6 @@ export function useUser() {
     fetchUser,
     computeWishesCount,
     computeFriendsCount,
+    userWishlists,
   };
 }
