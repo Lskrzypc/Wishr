@@ -1,0 +1,258 @@
+<!-- eslint-disable vue/multi-word-component-names -->
+<script setup lang="ts">
+import type { FormSubmitEvent } from '@nuxt/ui';
+import { z } from 'zod';
+const route = useRoute();
+const id = String(route.params.id || '');
+const { userWishlists, updateUser, currentUser } = useUser();
+const isDeleteModalOpen = ref(false);
+const isAddItemModalOpen = ref(false);
+const toast = useToast();
+
+const currentWishlist = computed(() => {
+  return userWishlists.value.find((wishlist) => wishlist.id === id);
+});
+
+const isWishlistItemsEmpty = computed(() => {
+  return currentWishlist.value?.items?.length === 0;
+});
+
+const zodSchema = z.object({
+  title: z.string().min(1, 'Vous devez entrer un nom valide'),
+  description: z.string().optional(),
+  imageUrl: z.string().optional(),
+  price: z.number().positive('Le prix doit être un nombre positif'),
+});
+
+type FormSchema = z.output<typeof zodSchema>;
+
+const formValues = reactive<FormSchema>({
+  title: '',
+  description: '',
+  imageUrl: '',
+  price: 0,
+});
+
+async function onSubmit(event: FormSubmitEvent<FormSchema>) {
+  const newItem = {
+    id: crypto.randomUUID(),
+    title: event.data.title,
+    description: event.data.description || '',
+    imageUrl: event.data.imageUrl || '',
+    price: event.data.price,
+    isReserved: false,
+    reservedBy: '',
+  };
+
+  try {
+    const updatedItems = [...(currentWishlist.value?.items || []), newItem];
+    const newWishlists = userWishlists.value.map((wishlist) => {
+      if (wishlist.id === id) {
+        return {
+          ...wishlist,
+          items: updatedItems,
+          updatedAt: new Date().toISOString(),
+        };
+      }
+      return wishlist;
+    });
+    await updateUser(currentUser.value!.id, {
+      wishlists: newWishlists,
+    });
+    isAddItemModalOpen.value = false;
+    toast.add({
+      title: 'Super !',
+      description: 'Votre voeu a été ajouté avec succès.',
+      icon: 'i-lucide-check-circle',
+      color: 'success',
+    });
+  } catch (error) {
+    toast.add({
+      title: 'Mince !',
+      description: "Votre voeu n'a pas pu être ajouté.",
+      icon: 'i-lucide-x-circle',
+      color: 'error',
+    });
+    console.error('Error updating user:', error);
+  }
+}
+
+async function onBackClicked() {
+  await navigateTo('/home');
+}
+
+function onDeleteClicked() {
+  isDeleteModalOpen.value = true;
+}
+
+function onAddItemClicked() {
+  isAddItemModalOpen.value = true;
+}
+
+async function onConfirmDeleteClicked() {
+  const newWishlists = userWishlists.value.filter(
+    (wishlist) => wishlist.id !== id,
+  );
+  try {
+    await updateUser(currentUser.value!.id, {
+      wishlists: newWishlists,
+    });
+    toast.add({
+      title: "C'est fait !",
+      description: 'Votre wishlist a été supprimée avec succès.',
+      icon: 'i-lucide-check-circle',
+      color: 'success',
+    });
+    await navigateTo('/home');
+  } catch (error) {
+    toast.add({
+      title: 'Mince !',
+      description: "Votre wishlist n'a pas pu être supprimée.",
+      icon: 'i-lucide-x-circle',
+      color: 'error',
+    });
+    console.error('Error updating user:', error);
+  }
+}
+</script>
+
+<template>
+  <main class="flex flex-col min-h-screen px-6 md:px-16 lg:px-80">
+    <div class="flex flex-row mt-8 justify-between items-center">
+      <div
+        class="flex flex-row items-center justify-center h-8 w-8 rounded-lg bg-wishr-gray/25 cursor-pointer"
+        @click="onBackClicked"
+      >
+        <UIcon name="i-lucide-arrow-left" class="size-5" />
+      </div>
+      <span class="font-bold">{{ currentWishlist?.title }}</span>
+      <div
+        class="flex flex-row items-center justify-center h-8 w-8 rounded-lg bg-wishr-gray/25 cursor-pointer"
+        @click="onDeleteClicked"
+      >
+        <UIcon name="i-lucide-trash" class="size-5" />
+      </div>
+    </div>
+
+    <div v-if="isWishlistItemsEmpty" class="flex flex-col mt-8">
+      <p class="text-gray-600 text-sm text-center">
+        Ajoutez des éléments à votre wishlist pour commencer à planifier vos
+        envies !
+      </p>
+      <UButton
+        class="bg-wishr-orange active:bg-wishr-orange/80 active:scale-98 mx-auto mt-4"
+        size="lg"
+        @click="onAddItemClicked"
+        >Ajouter un premier voeu</UButton
+      >
+    </div>
+
+    <UModal v-model:open="isDeleteModalOpen">
+      <template #content>
+        <div class="mx-auto w-full px-6 py-6">
+          <h2 class="text-xl font-bold mb-3">
+            Êtes-vous sûr de vouloir supprimer cette wishlist ?
+          </h2>
+          <p class="mb-6">
+            Cette action est irréversible. Tous les éléments de cette wishlist
+            seront également supprimés.
+          </p>
+          <div class="flex flex-row justify-end gap-4">
+            <UButton
+              class="bg-red-500 active:bg-red-500/80 active:scale-98"
+              size="lg"
+              @click="onConfirmDeleteClicked"
+              >Supprimer</UButton
+            >
+          </div>
+        </div>
+      </template>
+    </UModal>
+
+    <UModal v-model:open="isAddItemModalOpen">
+      <template #content>
+        <div class="mx-auto w-full px-6 py-6">
+          <h2 class="text-xl font-bold mb-3">
+            Ajouter un nouvel élément à cette wishlist
+          </h2>
+          <UForm :schema="zodSchema" :state="formValues" @submit="onSubmit">
+            <UFormField name="title" label="Nom du produit" :required="true">
+              <UInput
+                v-model="formValues.title"
+                placeholder="Ex: Boule à thé"
+                type="text"
+                color="neutral"
+                class="w-full"
+              />
+            </UFormField>
+            <UFormField
+              name="description"
+              label="Description du produit"
+              class="mt-2"
+            >
+              <UInput
+                v-model="formValues.description"
+                placeholder="Ex: Une jolie boule à thé en acier inoxydable"
+                type="text"
+                color="neutral"
+                class="w-full"
+              />
+            </UFormField>
+            <UFormField
+              name="imageUrl"
+              label="URL de l'image du produit"
+              class="mt-2"
+            >
+              <UInput
+                v-model="formValues.imageUrl"
+                placeholder="Ex: https://example.com/image.jpg"
+                type="text"
+                color="neutral"
+                class="w-full"
+              />
+            </UFormField>
+            <UFormField
+              name="price"
+              label="Prix du produit"
+              class="mt-2"
+              :required="true"
+            >
+              <UInput
+                v-model="formValues.price"
+                placeholder="Ex: 29.99"
+                type="number"
+                color="neutral"
+                class="w-full"
+              />
+            </UFormField>
+            <div class="flex justify-end mt-6">
+              <UButton
+                class="bg-wishr-orange active:bg-wishr-orange/80 active:scale-98"
+                size="lg"
+                type="submit"
+                @on-click="onSubmit"
+                >Ajouter mon voeu</UButton
+              >
+            </div>
+          </UForm>
+        </div>
+      </template>
+    </UModal>
+    <UIDraggableButton
+      class="rounded-full"
+      :bottom-offset="20"
+      :right-offset="20"
+      @click="isAddItemModalOpen = true"
+    >
+      <div
+        class="flex w-16 h-16 bg-wishr-orange rounded-full items-center justify-center shadow-lg cursor-pointer"
+      >
+        <div
+          class="flex w-12 h-12 bg-[#CF7945] rounded-full items-center justify-center"
+        >
+          <UIcon name="i-lucide-plus" class="size-6 text-white" />
+        </div>
+      </div>
+    </UIDraggableButton>
+  </main>
+</template>

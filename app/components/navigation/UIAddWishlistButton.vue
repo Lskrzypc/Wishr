@@ -13,11 +13,10 @@ const zodSchema = z.object({
 type FormSchema = z.output<typeof zodSchema>;
 
 const formValues = reactive<FormSchema>({
-  title: 'Ma nouvelle wishlist',
+  title: '',
 });
 
 async function onSubmit(event: FormSubmitEvent<FormSchema>) {
-  console.log('New wishlist created with title :', event.data.title);
   const currentUserId = currentUser.value?.id;
   if (!currentUserId) {
     console.error('No current user found');
@@ -78,7 +77,7 @@ function dismissModal() {
           <UFormField name="title" label="Nom de la wishlist">
             <UInput
               v-model="formValues.title"
-              placeholder="Ex: Wishlist de Noël"
+              placeholder="Ex: Noël 2025🎄"
               type="text"
               color="neutral"
               class="w-full mt-2"

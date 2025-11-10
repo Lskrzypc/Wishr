@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const { currentUser, computeWishesCount, computeFriendsCount } = useUser();
-const { user } = useAuth();
+const { currentUser, userWishesCount, computeFriendsCount } = useUser();
+const { user, logout } = useAuth();
 </script>
 
 <template>
@@ -18,9 +18,16 @@ const { user } = useAuth();
         }}</span
       >
       <span class="text-sm text-gray-500 font-semibold"
-        >{{ computeWishesCount(currentUser) }} voeux |
+        >{{ userWishesCount }} voeux |
         {{ computeFriendsCount(currentUser) }} amis
       </span>
+    </div>
+    <div class="flex h-full items-center justify-center ml-auto">
+      <UIcon
+        name="i-lucide-log-out"
+        class="size-5 text-gray-500 cursor-pointer"
+        @click="logout"
+      />
     </div>
   </section>
 </template>

@@ -25,16 +25,17 @@ export function useUser() {
     return await userStore.userExists(userId);
   }
 
-  function computeWishesCount(user: UserInterface): number {
-    if (!user || !user.wishlists || user.wishlists.length === 0) return 0;
-
-    return user.wishlists.reduce((count, wishlist) => {
-      return count + (wishlist.items ? wishlist.items.length : 0);
-    }, 0);
-  }
-
   const userWishlists = computed<WishlistInterface[]>(() => {
     return currentUser.value?.wishlists || [];
+  });
+
+  const userWishesCount = computed(() => {
+    const wishlists = userWishlists.value;
+    let totalWishes = 0;
+    wishlists.forEach((wishlist) => {
+      totalWishes += wishlist.items?.length || 0;
+    });
+    return totalWishes;
   });
 
   function computeFriendsCount(user: UserInterface): number {
@@ -49,8 +50,8 @@ export function useUser() {
     userExists,
     addUser,
     fetchUser,
-    computeWishesCount,
     computeFriendsCount,
     userWishlists,
+    userWishesCount,
   };
 }

@@ -4,16 +4,21 @@
       <span class="text-wishr-gray font-bold">Mes wishlists :</span>
       <span class="text-wishr-orange font-bold cursor-pointer">Voir tout</span>
     </div>
-    <div class="mt-4 flex flex-col space-y-4">
+
+    <div class="grid grid-cols-2 gap-4 mt-4">
       <div
         v-for="wishlist in userWishlists"
         :key="wishlist.id"
-        class="w-full h-32 bg-wishr-orange rounded-2xl p-4 flex flex-col justify-between cursor-pointer hover:shadow-lg transition-shadow"
+        class="flex flex-col rounded-3xl p-4 w-full h-32 shadow-lg cursor-pointer justify-end bg-[#2c2c2c]"
+        @click="goToWishlist(wishlist.id)"
       >
-        <span class="font-bold text-lg">{{ wishlist.title }}</span>
-        <span class="text-sm text-wishr-gray">
-          {{ wishlist.items?.length }} vœux
-        </span>
+        <span class="text-wishr-orange font-semibold text-xs mb-1"
+          >Wishlist n°{{ userWishlists.indexOf(wishlist) + 1 }}</span
+        >
+
+        <span class="font-semibold text-white text-lg justify-end">{{
+          wishlist.title
+        }}</span>
       </div>
     </div>
   </div>
@@ -21,4 +26,9 @@
 
 <script setup lang="ts">
 const { userWishlists } = useUser();
+
+async function goToWishlist(id: string) {
+  const router = useRouter();
+  await router.push(`/wishlist/${id}`);
+}
 </script>
