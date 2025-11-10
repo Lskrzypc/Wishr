@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     await new Promise((r) => setTimeout(r, 100));
   }
 
-  if (to.meta.accessMode === 'not-authenticated' && isAuthenticated.value) {
+  if (to.meta.accessMode === 'public' && isAuthenticated.value) {
     await navigateTo('/');
     return;
   }

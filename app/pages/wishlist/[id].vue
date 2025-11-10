@@ -2,6 +2,11 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui';
 import { z } from 'zod';
+
+definePageMeta({
+  accessMode: 'public',
+});
+
 const route = useRoute();
 const id = String(route.params.id || '');
 const { userWishlists, updateUser, currentUser } = useUser();
@@ -126,6 +131,7 @@ async function onConfirmDeleteClicked() {
         <UIcon name="i-lucide-arrow-left" class="size-5" />
       </div>
       <span class="font-bold">{{ currentWishlist?.title }}</span>
+
       <div
         class="flex flex-row items-center justify-center h-8 w-8 rounded-lg bg-wishr-gray/25 cursor-pointer"
         @click="onDeleteClicked"
@@ -146,6 +152,38 @@ async function onConfirmDeleteClicked() {
         >Ajouter un premier voeu</UButton
       >
     </div>
+
+    <div
+      v-if="!isWishlistItemsEmpty"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8 mb-16"
+    >
+      <h1 class="font-bold text-2xl col-span-full">Mes voeux :</h1>
+      <UIItem
+        v-for="item in currentWishlist?.items"
+        :key="item.id"
+        :title="item.title"
+        :description="item.description"
+        :image-url="item.imageUrl"
+        :price="item.price"
+      />
+    </div>
+
+    <UIDraggableButton
+      class="rounded-full"
+      :bottom-offset="20"
+      :right-offset="20"
+      @click="isAddItemModalOpen = true"
+    >
+      <div
+        class="flex w-16 h-16 bg-wishr-orange rounded-full items-center justify-center shadow-lg cursor-pointer"
+      >
+        <div
+          class="flex w-12 h-12 bg-[#CF7945] rounded-full items-center justify-center"
+        >
+          <UIcon name="i-lucide-plus" class="size-6 text-white" />
+        </div>
+      </div>
+    </UIDraggableButton>
 
     <UModal v-model:open="isDeleteModalOpen">
       <template #content>
@@ -238,21 +276,5 @@ async function onConfirmDeleteClicked() {
         </div>
       </template>
     </UModal>
-    <UIDraggableButton
-      class="rounded-full"
-      :bottom-offset="20"
-      :right-offset="20"
-      @click="isAddItemModalOpen = true"
-    >
-      <div
-        class="flex w-16 h-16 bg-wishr-orange rounded-full items-center justify-center shadow-lg cursor-pointer"
-      >
-        <div
-          class="flex w-12 h-12 bg-[#CF7945] rounded-full items-center justify-center"
-        >
-          <UIcon name="i-lucide-plus" class="size-6 text-white" />
-        </div>
-      </div>
-    </UIDraggableButton>
   </main>
 </template>
