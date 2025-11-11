@@ -52,6 +52,25 @@ export const useUserStore = defineStore('user', {
       return !querySnapshot.empty;
     },
 
+    async fetchWishlist(wishlistId: string) {
+      const db = useFirestore();
+
+      const q = query(collection(db, 'users'));
+
+      const querySnapshot = await getDocs(q);
+      for (const userDoc of querySnapshot.docs) {
+        const userData = userDoc.data() as UserInterface;
+        const wishlists = userData.wishlists || [];
+        const foundWishlist = wishlists.find(
+          (wishlist) => wishlist.id === wishlistId,
+        );
+        if (foundWishlist) {
+          return foundWishlist;
+        }
+      }
+      return undefined;
+    },
+
     fetchUser(userId: string) {
       const db = useFirestore();
 

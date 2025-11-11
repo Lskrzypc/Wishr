@@ -15,3 +15,9 @@
     <UIFooter />
   </main>
 </template>
+
+<script setup lang="ts">
+definePageMeta({
+  accessMode: 'authenticated',
+});
+</script>

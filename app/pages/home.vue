@@ -1,5 +1,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
+definePageMeta({
+  accessMode: 'authenticated',
+});
 const { userWishlists, userWishesCount } = useUser();
 </script>
 <template>
