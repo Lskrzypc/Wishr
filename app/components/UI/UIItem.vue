@@ -4,23 +4,23 @@ defineProps<{
   description?: string;
   imageUrl?: string;
   price?: number;
-  isEditionMode?: boolean;
 }>();
 
 interface Emits {
-  (e: 'delete-item'): void;
+  (e: 'item-clicked'): void;
 }
 
 const emit = defineEmits<Emits>();
 
-function onDeleteItem() {
-  emit('delete-item');
+function onItemClicked() {
+  emit('item-clicked');
 }
 </script>
 
 <template>
   <div
-    class="flex flex-col bg-[#2c2c2c] rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-[1.02] hover:shadow-xl min-h-[22rem]"
+    class="flex flex-col bg-[#2c2c2c] rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-[1.02] hover:shadow-xl min-h-88"
+    @click="onItemClicked"
   >
     <img
       v-if="imageUrl"
@@ -38,19 +38,9 @@ function onDeleteItem() {
         {{ description }}
       </span>
 
-      <div class="mt-4 flex flex-row items-center justify-between">
-        <span v-if="price" class="text-wishr-orange font-bold text-md">
-          {{ price.toFixed(2) }} €
-        </span>
-
-        <UButton
-          v-if="isEditionMode"
-          class="bg-wishr-gray/25 text-white hover:bg-wishr-gray/40 active:bg-wishr-gray/50"
-          size="sm"
-          @click="onDeleteItem"
-          >Supprimer</UButton
-        >
-      </div>
+      <span v-if="price" class="text-wishr-orange font-bold text-md">
+        {{ price.toFixed(2) }} €
+      </span>
     </div>
   </div>
 </template>

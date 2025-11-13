@@ -8,12 +8,14 @@ definePageMeta({
 });
 
 const route = useRoute();
-const wishlistId = route.params.id;
+const toast = useToast();
 const { updateUser, currentUser } = useUser();
 const { userWishlists } = useWishlist();
-const isDeleteModalOpen = ref(false);
+
+const wishlistId = route.params.id;
+
+const isDeleteWishlistModalOpen = ref(false);
 const isAddItemModalOpen = ref(false);
-const toast = useToast();
 
 const currentWishlist = computed(() => {
   return userWishlists.value.find((wishlist) => wishlist.id === wishlistId);
@@ -88,47 +90,47 @@ async function onBackClicked() {
 }
 
 function onDeleteClicked() {
-  isDeleteModalOpen.value = true;
+  isDeleteWishlistModalOpen.value = true;
 }
 
 function onAddItemClicked() {
   isAddItemModalOpen.value = true;
 }
 
-async function onDeleteItem(itemId: string) {
-  const updatedItems = currentWishlist.value?.items?.filter(
-    (item) => item.id !== itemId,
-  );
-  const newWishlists = userWishlists.value.map((wishlist) => {
-    if (wishlist.id === wishlistId) {
-      return {
-        ...wishlist,
-        items: updatedItems || [],
-        updatedAt: new Date().toISOString(),
-      };
-    }
-    return wishlist;
-  });
-  try {
-    await updateUser(currentUser.value!.id, {
-      wishlists: newWishlists,
-    });
-    toast.add({
-      title: "C'est fait !",
-      description: "L'élément a été supprimé avec succès.",
-      icon: 'i-lucide-check-circle',
-      color: 'success',
-    });
-  } catch (error) {
-    toast.add({
-      title: 'Mince !',
-      description: "L'élément n'a pas pu être supprimé.",
-      icon: 'i-lucide-x-circle',
-      color: 'error',
-    });
-    console.error('Error updating user:', error);
-  }
-}
+// async function onDeleteItem(itemId: string) {
+//   const updatedItems = currentWishlist.value?.items?.filter(
+//     (item) => item.id !== itemId,
+//   );
+//   const newWishlists = userWishlists.value.map((wishlist) => {
+//     if (wishlist.id === wishlistId) {
+//       return {
+//         ...wishlist,
+//         items: updatedItems || [],
+//         updatedAt: new Date().toISOString(),
+//       };
+//     }
+//     return wishlist;
+//   });
+//   try {
+//     await updateUser(currentUser.value!.id, {
+//       wishlists: newWishlists,
+//     });
+//     toast.add({
+//       title: "C'est fait !",
+//       description: "L'élément a été supprimé avec succès.",
+//       icon: 'i-lucide-check-circle',
+//       color: 'success',
+//     });
+//   } catch (error) {
+//     toast.add({
+//       title: 'Mince !',
+//       description: "L'élément n'a pas pu être supprimé.",
+//       icon: 'i-lucide-x-circle',
+//       color: 'error',
+//     });
+//     console.error('Error updating user:', error);
+//   }
+// }
 
 async function onConfirmDeleteClicked() {
   const newWishlists = userWishlists.value.filter(
@@ -154,6 +156,10 @@ async function onConfirmDeleteClicked() {
     });
     console.error('Error updating user:', error);
   }
+}
+
+async function onItemClicked(itemId: string) {
+  await navigateTo(`/item/${itemId}`);
 }
 </script>
 
@@ -202,7 +208,7 @@ async function onConfirmDeleteClicked() {
         :image-url="item.imageUrl"
         :price="item.price"
         :is-edition-mode="true"
-        @delete-item="onDeleteItem(item.id)"
+        @item-clicked="onItemClicked(item.id)"
       />
     </div>
 
@@ -223,7 +229,7 @@ async function onConfirmDeleteClicked() {
       </div>
     </UIDraggableButton>
 
-    <UModal v-model:open="isDeleteModalOpen">
+    <UModal v-model:open="isDeleteWishlistModalOpen">
       <template #content>
         <div class="mx-auto w-full px-6 py-6">
           <h2 class="text-xl font-bold mb-3">
