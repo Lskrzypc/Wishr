@@ -9,8 +9,8 @@ definePageMeta({
 
 const route = useRoute();
 const wishlistId = route.params.id;
-const { userWishlists, updateUser, currentUser } = useUser();
-
+const { updateUser, currentUser } = useUser();
+const { userWishlists } = useWishlist();
 const isDeleteModalOpen = ref(false);
 const isAddItemModalOpen = ref(false);
 const toast = useToast();
@@ -96,7 +96,7 @@ function onAddItemClicked() {
 }
 
 async function onDeleteItem(itemId: string) {
-  const updatedItems = currentWishlist.value?.items.filter(
+  const updatedItems = currentWishlist.value?.items?.filter(
     (item) => item.id !== itemId,
   );
   const newWishlists = userWishlists.value.map((wishlist) => {

@@ -25,10 +25,9 @@
 </template>
 
 <script setup lang="ts">
-const { userWishlists } = useUser();
+const { userWishlists } = useWishlist();
 
 async function goToWishlist(id: string) {
-  const router = useRouter();
-  await router.push(`/wishlist/${id}`);
+  await navigateTo(`/wishlist/${id}`);
 }
 </script>

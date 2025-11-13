@@ -15,12 +15,12 @@ defineProps<Props>();
       <div
         class="w-7 h-7 bg-white rounded-full items-center justify-center flex"
       >
-        <UIcon :name="iconName" class="size-4 text-[#847b6d]" />
+        <UIcon :name="iconName" class="size-4 text-wishr-gray" />
       </div>
-      <span class="text-lg font-black text-[#847b6d]">{{ count }}</span>
+      <span class="text-lg font-black text-wishr-gray">{{ count }}</span>
     </div>
     <!-- Title -->
-    <span class="text-base font-bold text-[#847b6d] mt-auto self-end">{{
+    <span class="text-base font-bold text-wishr-gray mt-auto self-end">{{
       title
     }}</span>
   </div>
