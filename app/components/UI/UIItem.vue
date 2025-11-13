@@ -19,7 +19,7 @@ function onItemClicked() {
 
 <template>
   <div
-    class="flex flex-col bg-[#2c2c2c] rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-[1.02] hover:shadow-xl min-h-88"
+    class="flex flex-col bg-[#2c2c2c] rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-[1.02] hover:shadow-xl"
     @click="onItemClicked"
   >
     <img
