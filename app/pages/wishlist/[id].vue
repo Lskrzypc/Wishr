@@ -165,7 +165,7 @@ async function onItemClicked(itemId: string) {
         class="bg-wishr-orange active:bg-wishr-orange/80 active:scale-98 mx-auto mt-4"
         size="lg"
         @click="onAddItemClicked"
-        >Ajouter un premier voeu</UButton
+        >Ajouter un premier vœu</UButton
       >
     </div>
 
@@ -173,7 +173,7 @@ async function onItemClicked(itemId: string) {
       v-if="!isWishlistItemsEmpty"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8 mb-16"
     >
-      <h1 class="font-bold text-2xl col-span-full">Mes voeux :</h1>
+      <h1 class="font-bold text-2xl col-span-full">Mes vœux :</h1>
       <UIItem
         v-for="item in currentWishlist?.items"
         :key="item.id"
@@ -228,10 +228,17 @@ async function onItemClicked(itemId: string) {
     <UModal v-model:open="isAddItemModalOpen">
       <template #content>
         <div class="mx-auto w-full px-6 py-6">
-          <h2 class="text-xl font-bold mb-3">
-            Ajouter un nouvel élément à cette wishlist
-          </h2>
-          <UForm :schema="zodSchema" :state="formValues" @submit="onSubmit">
+          <h2 class="text-xl font-bold">Ajouter un nouveau vœu</h2>
+          <span class="text-sm text-gray-500"
+            >Remplissez les informations ci-dessous pour ajouter un nouveau vœu
+            à votre wishlist.</span
+          >
+          <UForm
+            class="mt-4"
+            :schema="zodSchema"
+            :state="formValues"
+            @submit="onSubmit"
+          >
             <UFormField name="title" label="Nom du produit" :required="true">
               <UInput
                 v-model="formValues.title"
@@ -244,7 +251,7 @@ async function onItemClicked(itemId: string) {
             <UFormField
               name="description"
               label="Description du produit"
-              class="mt-2"
+              class="mt-4"
             >
               <UInput
                 v-model="formValues.description"
@@ -257,7 +264,7 @@ async function onItemClicked(itemId: string) {
             <UFormField
               name="imageUrl"
               label="URL de l'image du produit"
-              class="mt-2"
+              class="mt-4"
             >
               <UFileUpload
                 v-model="formValues.imageUrl"
@@ -266,7 +273,7 @@ async function onItemClicked(itemId: string) {
                 class="w-full"
               />
             </UFormField>
-            <UFormField name="productUrl" label="URL du produit" class="mt-2">
+            <UFormField name="productUrl" label="URL du produit" class="mt-4">
               <UInput
                 v-model="formValues.productUrl"
                 placeholder="Ex: https://example.com/product"
@@ -278,7 +285,7 @@ async function onItemClicked(itemId: string) {
             <UFormField
               name="price"
               label="Prix du produit"
-              class="mt-2"
+              class="mt-4"
               :required="true"
             >
               <UInput
