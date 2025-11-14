@@ -76,7 +76,7 @@ const currentItemInfo = computed(() => {
 const zodSchema = z.object({
   title: z.string().min(1, 'Vous devez entrer un nom valide'),
   description: z.string().optional(),
-  imageUrl: z.string().optional(),
+  productUrl: z.string().optional(),
   price: z.number().nonnegative('Le prix doit être positif').optional(),
 });
 
@@ -85,7 +85,7 @@ type FormSchema = z.output<typeof zodSchema>;
 const formValues = reactive<FormSchema>({
   title: '',
   description: '',
-  imageUrl: '',
+  productUrl: '',
   price: 0,
 });
 
@@ -96,7 +96,7 @@ watch(
     if (val && val.item) {
       formValues.title = val.item.title || '';
       formValues.description = val.item.description || '';
-      formValues.imageUrl = val.item.imageUrl || '';
+      formValues.productUrl = val.item.productUrl || '';
       formValues.price = val.item.price ?? 0;
     }
   },
@@ -123,7 +123,7 @@ async function onSubmit(event: FormSubmitEvent<FormSchema>) {
         ...it,
         title: event.data.title,
         description: event.data.description || '',
-        imageUrl: event.data.imageUrl || '',
+        productUrl: event.data.productUrl || '',
         price: event.data.price ?? 0,
       };
     });
@@ -209,8 +209,8 @@ async function onSubmit(event: FormSubmitEvent<FormSchema>) {
           <UInput v-model="formValues.description" class="w-full" />
         </UFormField>
 
-        <UFormField name="imageUrl" label="URL de l'image">
-          <UInput v-model="formValues.imageUrl" class="w-full" />
+        <UFormField name="productUrl" label="URL du produit">
+          <UInput v-model="formValues.productUrl" class="w-full" />
         </UFormField>
 
         <UFormField name="price" label="Prix">

@@ -28,7 +28,8 @@ const isWishlistItemsEmpty = computed(() => {
 const zodSchema = z.object({
   title: z.string().min(1, 'Vous devez entrer un nom valide'),
   description: z.string().optional(),
-  imageUrl: z.string().optional(),
+  imageUrl: z.instanceof(File).optional(),
+  productUrl: z.string().optional(),
   price: z.number().positive('Le prix doit être un nombre positif'),
 });
 
@@ -37,17 +38,25 @@ type FormSchema = z.output<typeof zodSchema>;
 const formValues = reactive<FormSchema>({
   title: '',
   description: '',
-  imageUrl: '',
+  imageUrl: undefined,
+  productUrl: '',
   price: 0,
 });
+
+function toBase64(file: File | undefined): string | null {
+  if (!file) return null;
+  return URL.createObjectURL(file);
+}
 
 async function onSubmit(event: FormSubmitEvent<FormSchema>) {
   const newItem = {
     id: crypto.randomUUID(),
     title: event.data.title,
     description: event.data.description || '',
-    imageUrl: event.data.imageUrl || '',
+    // Transform file to base64 URL or upload and get URL
+    imageUrl: toBase64(event.data.imageUrl) || '',
     price: event.data.price,
+    productUrl: event.data.productUrl || '',
     isReserved: false,
     reservedBy: '',
   };
@@ -96,41 +105,6 @@ function onDeleteClicked() {
 function onAddItemClicked() {
   isAddItemModalOpen.value = true;
 }
-
-// async function onDeleteItem(itemId: string) {
-//   const updatedItems = currentWishlist.value?.items?.filter(
-//     (item) => item.id !== itemId,
-//   );
-//   const newWishlists = userWishlists.value.map((wishlist) => {
-//     if (wishlist.id === wishlistId) {
-//       return {
-//         ...wishlist,
-//         items: updatedItems || [],
-//         updatedAt: new Date().toISOString(),
-//       };
-//     }
-//     return wishlist;
-//   });
-//   try {
-//     await updateUser(currentUser.value!.id, {
-//       wishlists: newWishlists,
-//     });
-//     toast.add({
-//       title: "C'est fait !",
-//       description: "L'élément a été supprimé avec succès.",
-//       icon: 'i-lucide-check-circle',
-//       color: 'success',
-//     });
-//   } catch (error) {
-//     toast.add({
-//       title: 'Mince !',
-//       description: "L'élément n'a pas pu être supprimé.",
-//       icon: 'i-lucide-x-circle',
-//       color: 'error',
-//     });
-//     console.error('Error updating user:', error);
-//   }
-// }
 
 async function onConfirmDeleteClicked() {
   const newWishlists = userWishlists.value.filter(
@@ -285,9 +259,17 @@ async function onItemClicked(itemId: string) {
               label="URL de l'image du produit"
               class="mt-2"
             >
-              <UInput
+              <UFileUpload
                 v-model="formValues.imageUrl"
-                placeholder="Ex: https://example.com/image.jpg"
+                placeholder="Choisir un fichier"
+                color="neutral"
+                class="w-full"
+              />
+            </UFormField>
+            <UFormField name="productUrl" label="URL du produit" class="mt-2">
+              <UInput
+                v-model="formValues.productUrl"
+                placeholder="Ex: https://example.com/product"
                 type="text"
                 color="neutral"
                 class="w-full"

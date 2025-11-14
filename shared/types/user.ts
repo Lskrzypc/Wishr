@@ -11,6 +11,7 @@ export const itemSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
   imageUrl: z.string().optional(),
+  productUrl: z.string().optional(),
   price: z.number().optional(),
   isReserved: z.boolean().optional(),
   reservedBy: z.string().optional(),
