@@ -30,6 +30,10 @@ export function useUser() {
     return user.friends.length;
   }
 
+  function isUserWishlistOwner(wishlistUserId: string): boolean {
+    return currentUser.value?.id === wishlistUserId;
+  }
+
   return {
     currentUser,
     updateUser,
@@ -38,5 +42,6 @@ export function useUser() {
     addUser,
     fetchUser,
     computeFriendsCount,
+    isUserWishlistOwner,
   };
 }

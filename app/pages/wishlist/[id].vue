@@ -2,17 +2,21 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui';
 import { z } from 'zod';
+import { is } from 'zod/v4/locales';
 
 definePageMeta({
-  accessMode: 'authenticated',
+  accessMode: 'public',
 });
 
 const route = useRoute();
 const toast = useToast();
-const { updateUser, currentUser } = useUser();
+const { updateUser, currentUser, isUserWishlistOwner } = useUser();
 const { userWishlists } = useWishlist();
 
 const wishlistId = route.params.id;
+const isEditionMode = computed(() => {
+  return isUserWishlistOwner(currentUser.value?.id || '');
+});
 
 const isDeleteWishlistModalOpen = ref(false);
 const isAddItemModalOpen = ref(false);
@@ -150,6 +154,7 @@ async function onItemClicked(itemId: string) {
   <main class="flex flex-col min-h-screen px-6 md:px-16 lg:px-80">
     <div class="flex flex-row mt-8 justify-between items-center">
       <div
+        v-if="isEditionMode"
         class="flex flex-row items-center justify-center h-8 w-8 rounded-lg bg-wishr-gray/25 cursor-pointer"
         @click="onBackClicked"
       >
@@ -158,6 +163,7 @@ async function onItemClicked(itemId: string) {
       <span class="font-bold">{{ currentWishlist?.title }}</span>
 
       <div
+        v-if="isEditionMode"
         class="flex flex-row items-center justify-center h-8 w-8 rounded-lg bg-wishr-gray/25 cursor-pointer"
         @click="onDeleteClicked"
       >
@@ -171,6 +177,7 @@ async function onItemClicked(itemId: string) {
         envies !
       </p>
       <UButton
+        v-if="isEditionMode"
         class="bg-wishr-orange active:bg-wishr-orange/80 active:scale-98 mx-auto mt-4"
         size="lg"
         @click="onAddItemClicked"
@@ -196,6 +203,7 @@ async function onItemClicked(itemId: string) {
     </div>
 
     <UIDraggableButton
+      v-if="isEditionMode"
       class="rounded-full"
       :bottom-offset="20"
       :right-offset="20"
@@ -212,7 +220,7 @@ async function onItemClicked(itemId: string) {
       </div>
     </UIDraggableButton>
 
-    <UModal v-model:open="isDeleteWishlistModalOpen">
+    <UModal v-if="isEditionMode" v-model:open="isDeleteWishlistModalOpen">
       <template #content>
         <div class="mx-auto w-full px-6 py-6">
           <h2 class="text-xl font-bold mb-3">
@@ -234,7 +242,7 @@ async function onItemClicked(itemId: string) {
       </template>
     </UModal>
 
-    <UModal v-model:open="isAddItemModalOpen">
+    <UModal v-if="isEditionMode" v-model:open="isAddItemModalOpen">
       <template #content>
         <div class="mx-auto w-full px-6 py-6">
           <h2 class="text-xl font-bold">Ajouter un nouveau vœu</h2>

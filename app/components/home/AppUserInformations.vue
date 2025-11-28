@@ -14,7 +14,7 @@ const { user, logout } = useAuth();
       <span class="font-bold text-lg"
         >{{ currentUser?.personalInformation.firstName || '' }}
         {{
-          currentUser?.personalInformation.lastName.toUpperCase() || ''
+          currentUser?.personalInformation?.lastName?.toUpperCase() || ''
         }}</span
       >
       <span class="text-sm text-gray-500 font-semibold"

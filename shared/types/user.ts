@@ -21,6 +21,7 @@ export type ItemInterface = z.infer<typeof itemSchema>;
 
 export const wishlistSchema = z.object({
   id: z.string(),
+  wishlistUserId: z.string(),
   title: z.string(),
   illustrationUrl: z.string().optional(),
   createdAt: z.string(),

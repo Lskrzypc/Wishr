@@ -29,6 +29,7 @@ async function onSubmit(event: FormSubmitEvent<FormSchema>) {
         ...(currentUser.value?.wishlists || []),
         {
           id: crypto.randomUUID(),
+          wishlistUserId: currentUserId,
           title: event.data.title,
           items: [],
           createdAt: new Date().toISOString(),
