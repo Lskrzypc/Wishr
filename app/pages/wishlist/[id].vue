@@ -43,25 +43,34 @@ const formValues = reactive<FormSchema>({
   price: 0,
 });
 
-function toBase64(file: File | undefined): string | null {
+async function fileToDataUrl(file?: File): Promise<string | null> {
   if (!file) return null;
-  return URL.createObjectURL(file);
+  return await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string | null);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
 }
 
 async function onSubmit(event: FormSubmitEvent<FormSchema>) {
-  const newItem = {
-    id: crypto.randomUUID(),
-    title: event.data.title,
-    description: event.data.description || '',
-    // Transform file to base64 URL or upload and get URL
-    imageUrl: toBase64(event.data.imageUrl) || '',
-    price: event.data.price,
-    productUrl: event.data.productUrl || '',
-    isReserved: false,
-    reservedBy: '',
-  };
-
   try {
+    // Ugly way to store image but man I don't have the budget for a proper storage
+    const imageDataUrl = await fileToDataUrl(
+      event.data.imageUrl as File | undefined,
+    );
+
+    const newItem = {
+      id: crypto.randomUUID(),
+      title: event.data.title,
+      description: event.data.description || '',
+      imageUrl: imageDataUrl || '',
+      price: event.data.price,
+      productUrl: event.data.productUrl || '',
+      isReserved: false,
+      reservedBy: '',
+    };
+
     const updatedItems = [...(currentWishlist.value?.items || []), newItem];
     const newWishlists = userWishlists.value.map((wishlist) => {
       if (wishlist.id === wishlistId) {
@@ -261,11 +270,7 @@ async function onItemClicked(itemId: string) {
                 class="w-full"
               />
             </UFormField>
-            <UFormField
-              name="imageUrl"
-              label="URL de l'image du produit"
-              class="mt-4"
-            >
+            <UFormField name="imageUrl" label="Image du produit" class="mt-4">
               <UFileUpload
                 v-model="formValues.imageUrl"
                 placeholder="Choisir un fichier"
@@ -273,7 +278,11 @@ async function onItemClicked(itemId: string) {
                 class="w-full"
               />
             </UFormField>
-            <UFormField name="productUrl" label="URL du produit" class="mt-4">
+            <UFormField
+              name="productUrl"
+              label="Lien pour acheter le produit"
+              class="mt-4"
+            >
               <UInput
                 v-model="formValues.productUrl"
                 placeholder="Ex: https://example.com/product"
