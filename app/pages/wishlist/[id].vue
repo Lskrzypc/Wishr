@@ -2,7 +2,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui';
 import { z } from 'zod';
-import { is } from 'zod/v4/locales';
 
 definePageMeta({
   accessMode: 'public',
@@ -11,22 +10,21 @@ definePageMeta({
 const route = useRoute();
 const toast = useToast();
 const { updateUser, currentUser, isUserWishlistOwner } = useUser();
-const { userWishlists } = useWishlist();
+const { userWishlists, getWishlistById } = useWishlist();
 
 const wishlistId = route.params.id;
-const isEditionMode = computed(() => {
-  return isUserWishlistOwner(currentUser.value?.id || '');
-});
 
 const isDeleteWishlistModalOpen = ref(false);
 const isAddItemModalOpen = ref(false);
 
-const currentWishlist = computed(() => {
-  return userWishlists.value.find((wishlist) => wishlist.id === wishlistId);
+const currentWishlist = await getWishlistById(wishlistId as string);
+
+const isEditionMode = computed(() => {
+  return isUserWishlistOwner(currentWishlist?.wishlistUserId as string);
 });
 
 const isWishlistItemsEmpty = computed(() => {
-  return currentWishlist.value?.items?.length === 0;
+  return currentWishlist?.items?.length === 0;
 });
 
 const zodSchema = z.object({
@@ -75,7 +73,7 @@ async function onSubmit(event: FormSubmitEvent<FormSchema>) {
       reservedBy: '',
     };
 
-    const updatedItems = [...(currentWishlist.value?.items || []), newItem];
+    const updatedItems = [...(currentWishlist?.items || []), newItem];
     const newWishlists = userWishlists.value.map((wishlist) => {
       if (wishlist.id === wishlistId) {
         return {
@@ -160,7 +158,9 @@ async function onItemClicked(itemId: string) {
       >
         <UIcon name="i-lucide-arrow-left" class="size-5" />
       </div>
-      <span class="font-bold">{{ currentWishlist?.title }}</span>
+      <span class="font-bold" :class="{ 'mx-auto': !isEditionMode }">{{
+        currentWishlist?.title
+      }}</span>
 
       <div
         v-if="isEditionMode"
