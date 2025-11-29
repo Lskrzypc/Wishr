@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { UserInterface } from '~~/shared/types/user';
+import type { UserInterface, WishlistInterface } from '~~/shared/types/user';
 import {
   addDoc,
   collection,
@@ -69,6 +69,36 @@ export const useUserStore = defineStore('user', {
         }
       }
       return undefined;
+    },
+
+    async updateWishlistById(
+      wishlistId: string,
+      updates: Partial<WishlistInterface>,
+    ) {
+      const db = useFirestore();
+      // Find the right user document that contains the wishlist
+      const q = query(collection(db, 'users'));
+
+      const querySnapshot = await getDocs(q);
+      for (const userDoc of querySnapshot.docs) {
+        const userData = userDoc.data() as UserInterface;
+        const wishlists = userData.wishlists || [];
+        const wishlistIndex = wishlists.findIndex(
+          (wishlist) => wishlist.id === wishlistId,
+        );
+        if (wishlistIndex !== -1) {
+          const updatedWishlist = {
+            ...wishlists[wishlistIndex],
+            ...updates,
+          };
+          wishlists[wishlistIndex] = updatedWishlist;
+
+          const userDocRef = doc(db, 'users', userDoc.id);
+          await updateDoc(userDocRef, { wishlists });
+
+          return;
+        }
+      }
     },
 
     fetchUser(userId: string) {

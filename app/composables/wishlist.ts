@@ -24,9 +24,17 @@ export function useWishlist() {
     return foundWishlist;
   }
 
+  async function updateWishlistById(
+    wishlistId: string,
+    updatedData: Partial<WishlistInterface>,
+  ) {
+    await userStore.updateWishlistById(wishlistId, updatedData);
+  }
+
   return {
     getWishlistById,
     userWishlists,
     userWishesCount,
+    updateWishlistById,
   };
 }

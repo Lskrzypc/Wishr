@@ -10,7 +10,7 @@ definePageMeta({
 const route = useRoute();
 const toast = useToast();
 const { updateUser, currentUser, isUserWishlistOwner } = useUser();
-const { userWishlists, getWishlistById } = useWishlist();
+const { userWishlists, getWishlistById, updateWishlistById } = useWishlist();
 
 const wishlistId = route.params.id;
 
@@ -143,6 +143,41 @@ async function onConfirmDeleteClicked() {
   }
 }
 
+async function onItemReserved(reservedBy: string, itemId: string) {
+  console.log('Reserving item:', itemId, 'by', reservedBy);
+  const updatedItems = currentWishlist?.items?.map((item) => {
+    if (item.id === itemId) {
+      return {
+        ...item,
+        isReserved: true,
+        reservedBy,
+      };
+    }
+    return item;
+  });
+
+  try {
+    await updateWishlistById(wishlistId as string, {
+      items: updatedItems,
+      updatedAt: new Date().toISOString(),
+    });
+    toast.add({
+      title: 'Super !',
+      description: 'Le voeu a été réservé avec succès.',
+      icon: 'i-lucide-check-circle',
+      color: 'success',
+    });
+  } catch (error) {
+    toast.add({
+      title: 'Mince !',
+      description: "La réservation n'a pas pu être effectuée.",
+      icon: 'i-lucide-x-circle',
+      color: 'error',
+    });
+    console.error('Error updating user:', error);
+  }
+}
+
 async function onItemClicked(itemId: string) {
   await navigateTo(`/item/${itemId}`);
 }
@@ -197,8 +232,10 @@ async function onItemClicked(itemId: string) {
         :description="item.description"
         :image-url="item.imageUrl"
         :price="item.price"
-        :is-edition-mode="true"
+        :is-reserved="item.isReserved"
+        :is-edition-mode="isEditionMode"
         @item-clicked="onItemClicked(item.id)"
+        @item-reserved="onItemReserved($event, item.id)"
       />
     </div>
 
